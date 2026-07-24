@@ -226,15 +226,26 @@ Rules:
 
     // ── Gemini (used for images, or if Groq not set up) ────────────────────
     else if (genAI) {
-      console.log('Gemini request: ' + question + ' image=' + hasImage);
+      console.log('Gemini request: "' + question + '" image=' + hasImage);
+      
+      let contentsPayload;
+      if (hasImage) {
+        contentsPayload = [
+          prompt,
+          {
+            inlineData: {
+              data: imageBase64,
+              mimeType: imageMimeType
+            }
+          }
+        ];
+      } else {
+        contentsPayload = prompt;
+      }
+
       const result = await genAI.models.generateContent({
         model: 'gemini-2.0-flash',
-        contents: hasImage
-          ? [{ role: 'user', parts: [
-              { text: prompt },
-              { inlineData: { data: imageBase64, mimeType: imageMimeType } }
-            ]}]
-          : prompt,
+        contents: contentsPayload,
         config: { responseMimeType: 'application/json' }
       });
       text = result.text;
