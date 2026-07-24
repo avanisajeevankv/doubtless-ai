@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Doubtless // Centered Multilingual Solver</title>
+  <meta name="description" content="An AI-powered centered bilingual academic doubt solver. Solve equations, diagrams, and texts side-by-side.">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  
+  <!-- Custom Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Background Animated Orbs -->
+  <div class="bg-glow-orb orb-1"></div>
+  <div class="bg-glow-orb orb-2"></div>
+  <div class="bg-glow-orb orb-3"></div>
+
+  <!-- Toast Messages -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <div class="app-container">
+    
+    <!-- ════ HEADER / NAVIGATION ════ -->
+    <header class="main-header">
+      <div class="header-left">
+        <button id="toggle-sound-btn" class="icon-btn" title="Toggle audio feedback">
+          <i class="fa-solid fa-volume-high"></i>
+        </button>
+      </div>
+
+      <!-- CENTERED LOGO & BRANDING -->
+      <div class="brand centered-brand">
+        <span class="wordmark"><span class="brand-doubt">Doubt</span><span class="brand-less">less</span> <span class="badge-ai">AI</span></span>
+        <span class="tagline">Multilingual Academic Refractor</span>
+      </div>
+
+      <div class="header-right">
+        <button id="theme-toggle-btn" class="icon-btn" title="Toggle Dark/Light Mode">
+          <i class="fa-solid fa-moon"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Demo Mode Banner -->
+    <div id="demo-banner" class="demo-banner hidden">
+      <i class="fa-solid fa-circle-info"></i>&nbsp; Running in Demo Mode with mock AI. Set a GEMINI_API_KEY for live multimodal translations.
+    </div>
+
+    <!-- Server Offline Banner -->
+    <div id="offline-banner" class="offline-banner hidden">
+      <i class="fa-solid fa-circle-xmark"></i>&nbsp; Local Server Offline. Open a console in the project folder and run <code>npm run dev</code> or <code>node server.js</code>, then refresh.
+    </div>
+
+    <!-- ════ CENTRAL SEARCH CONSOLE ════ -->
+    <section class="centered-search-section">
+      <div class="search-card card">
+        <div class="card-body">
+          
+          <div class="input-area-wrapper">
+            <textarea id="doubt-input" placeholder="Ask about quantum gates, organic chemistry, photoelectric effect, or upload an image..."></textarea>
+            
+            <!-- Voice wave visualizer -->
+            <div id="voice-wave" class="voice-wave hidden">
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+              <div class="wave-bar"></div>
+            </div>
+          </div>
+
+          <!-- Attachment Preview Box -->
+          <div id="image-preview-box" class="image-preview-box hidden">
+            <img id="image-preview" src="#" alt="Selected problem preview">
+            <button id="remove-image-btn" class="remove-img-btn" title="Remove attachment"><i class="fa-solid fa-xmark"></i></button>
+          </div>
+
+          <div class="console-actions-row">
+            
+            <!-- Left Side: File Attachment & Dictation -->
+            <div class="actions-left">
+              <!-- Upload image button -->
+              <button id="attachment-btn" class="action-trigger-btn" title="Attach image of doubt/formula">
+                <i class="fa-solid fa-image"></i> <span>Image</span>
+              </button>
+              <input type="file" id="image-upload" accept="image/*" class="hidden">
+
+              <!-- Mic voice button -->
+              <button id="mic-btn" class="action-trigger-btn" title="Speak your question">
+                <i class="fa-solid fa-microphone"></i> <span>Speak</span>
+              </button>
+            </div>
+
+            <!-- Right Side: Dropdowns -->
+            <div class="actions-right">
+              <select id="native-lang-select" title="Native Language">
+                <option value="Hindi" selected>Hindi (हिन्दी)</option>
+                <option value="Kannada">Kannada (ಕನ್ನಡ)</option>
+                <option value="Tamil">Tamil (தமிழ்)</option>
+                <option value="Telugu">Telugu (తెలుగు)</option>
+                <option value="Malayalam">Malayalam (മലയാളം)</option>
+                <option value="Bengali">Bengali (বাংলা)</option>
+                <option value="Marathi">Marathi (ಮರಾठी)</option>
+                <option value="Gujarati">Gujarati (ગુಜರಾತಿ)</option>
+                <option value="Urdu">Urdu (اردو)</option>
+              </select>
+
+              <select id="difficulty-select" title="Difficulty Rigor">
+                <option value="Beginner">Beginner</option>
+                <option value="Standard" selected>Standard</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </div>
+
+          </div>
+
+          <button id="solve-btn" class="btn btn-primary submit-solve-btn">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Solve Doubt
+          </button>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ MAIN WORKSPACE ════ -->
+    <main class="main-grid">
+
+      <!-- ── LEFT PANEL: SOLUTIONS & EXPLANATIONS ── -->
+      <div class="solution-column">
+        
+        <!-- Welcome Screen (Visible by default) -->
+        <div id="welcome-panel" class="welcome-panel card">
+          <div class="welcome-cube">
+            <i class="fa-solid fa-lightbulb"></i>
+          </div>
+          <h1>Clear Your Academic Doubts, Instantly.</h1>
+          <p>Submit text doubts or upload pictures of equations/diagrams. Doubtless refracts explanations bilingually—displaying college English and your native language side-by-side.</p>
+          
+          <div class="welcome-steps">
+            <div class="w-step">
+              <span class="step-num"><i class="fa-solid fa-file-arrow-up"></i></span>
+              <p>Type, speak, or upload an image of the problem.</p>
+            </div>
+            <div class="w-step">
+              <span class="step-num"><i class="fa-solid fa-columns"></i></span>
+              <p>Compare explanations side-by-side in your tongue.</p>
+            </div>
+            <div class="w-step">
+              <span class="step-num"><i class="fa-solid fa-cubes"></i></span>
+              <p>Take the 3D comprehension quiz to test your mastery.</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Solve Progress (Loading Screen) -->
+        <div id="solve-loader" class="solve-loader card hidden">
+          <div class="loader-visual">
+            <div class="spinning-orb"></div>
+            <div class="ray ray-vertical"></div>
+          </div>
+          <h2>Solving Doubt...</h2>
+          <p>Decrypting image files, indexing key terms, and localizing explanations. One second.</p>
+        </div>
+
+        <!-- Doubt Solution Content Panel (Hidden by default) -->
+        <div id="solution-panel" class="solution-panel hidden">
+          
+          <!-- Heading Bar -->
+          <div class="solution-heading card">
+            <div class="solution-meta">
+              <h1 id="solution-title">Doubt Explanation</h1>
+              <span id="solution-difficulty-badge" class="badge">Standard Level</span>
+            </div>
+            <div class="solution-actions">
+              <button id="star-btn" class="star-btn" title="Bookmark explanation">
+                <i class="fa-regular fa-star"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Explanations Container -->
+          <div class="explanations-grid">
+            <!-- English Explanations -->
+            <div class="explanation-col card">
+              <div class="col-header">
+                <h3>English Explanation</h3>
+                <button id="tts-english-btn" class="speak-btn" title="Read English aloud">
+                  <i class="fa-solid fa-volume-high"></i> Listen
+                </button>
+              </div>
+              <div class="col-body explanation-text" id="explanation-english-content"></div>
+            </div>
+
+            <!-- Native Explanations -->
+            <div class="explanation-col card">
+              <div class="col-header">
+                <h3>Native Language (<span id="native-lang-title">Hindi</span>)</h3>
+                <button id="tts-native-btn" class="speak-btn" title="Read native language aloud">
+                  <i class="fa-solid fa-volume-high"></i> Listen
+                </button>
+              </div>
+              <div class="col-body explanation-text" id="explanation-native-content"></div>
+            </div>
+          </div>
+
+          <!-- Vocabulary / Key Terms -->
+          <section class="vocab-section card">
+            <div class="card-header">
+              <h2><i class="fa-solid fa-spell-check gradient-icon"></i> Key Vocabulary & Terminology</h2>
+            </div>
+            <div class="card-body">
+              <div class="vocab-grid" id="vocab-container"></div>
+            </div>
+          </section>
+
+          <!-- Comprehension Check / 3D Quiz Card Arena -->
+          <section class="quiz-section card">
+            <div class="card-header">
+              <h2><i class="fa-solid fa-graduation-cap gradient-icon"></i> Comprehension Check</h2>
+              <span class="quiz-subtext">Click cards to reveal answers in 3D</span>
+            </div>
+            <div class="card-body">
+              <div class="quiz-grid" id="quiz-container"></div>
+            </div>
+          </section>
+        </div>
+
+      </div>
+
+      <!-- ── RIGHT PANEL: SIDEBAR HISTORY ── -->
+      <div class="sidebar-column">
+        
+        <!-- Stats Card -->
+        <section class="stats-card card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-chart-simple gradient-icon"></i> Dashboard Stats</h2>
+          </div>
+          <div class="card-body stats-grid">
+            <div class="mini-stat">
+              <span class="stat-lbl">Solved</span>
+              <span class="stat-num" id="stat-solved">0</span>
+            </div>
+            <div class="mini-stat">
+              <span class="stat-lbl">Langs</span>
+              <span class="stat-num" id="stat-langs">0</span>
+            </div>
+            <div class="mini-stat">
+              <span class="stat-lbl">Saved</span>
+              <span class="stat-num" id="stat-bookmarks">0</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Bookmarks / History Card -->
+        <section class="history-card card">
+          <div class="card-header">
+            <h2><i class="fa-solid fa-bookmark gradient-icon"></i> Solved Doubts</h2>
+            <div class="history-filter-toggle">
+              <label class="filter-switch">
+                <input type="checkbox" id="bookmarks-only-checkbox">
+                <span class="slider"></span>
+              </label>
+              <span class="filter-label">Saved</span>
+            </div>
+          </div>
+          <div class="card-body scrollable">
+            <div id="history-list" class="history-list">
+              <p class="empty-state">No history recorded yet.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+    </main>
+
+    <!-- ════ FOOTER ════ -->
+    <footer class="app-footer">
+      <span class="footer-brand">Doubtless AI &bull; Refracting doubts into clarity</span>
+      <span class="footer-tech">Powered by Gemini 1.5 Flash &bull; Native Speech & Multimodal Solver</span>
+    </footer>
+
+  </div>
+
+  <!-- Main JavaScript File -->
+  <script src="app.js"></script>
+</body>
+</html>
