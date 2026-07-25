@@ -173,9 +173,9 @@ app.post('/api/solve-doubt', async (req, res) => {
 
   const prompt = `
 You are "Doubtless AI", a premier bilingual academic tutor for college students.
-The student has submitted a doubt.
+The student has submitted an academic query.
 ${question ? `Student Question/Description: "${question}"` : ''}
-${hasImage ? `An image has been attached containing a mathematical formula, problem, or diagram. Solve and explain it.` : ''}
+${hasImage ? `An image is attached. It may contain printed text, textbook screenshots, or hand-written mathematical equations, notes, formulas, or diagrams. Carefully analyze the image, transcribe the text/handwriting, and solve the problem.` : ''}
 
 Please solve this doubt and provide an explanation under these parameters:
 1. Native Language/Locale: "${lang}"
@@ -186,7 +186,7 @@ Please solve this doubt and provide an explanation under these parameters:
 
 Respond with ONLY a valid JSON object matching this schema:
 {
-  "englishExplanation": "A detailed explanation in English using markdown formatting.",
+  "englishExplanation": "A detailed explanation in English using markdown formatting. Transcribe any equations or notes in the image first.",
   "nativeExplanation": "The matching explanation in ${lang}. Keep key English technical terms in brackets next to native words.",
   "keyTerms": [
     { "term": "English term", "nativeTranslation": "Translation in ${lang}", "definition": "Short definition" }
@@ -205,7 +205,7 @@ Rules:
 - Generate exactly 3 keyTerms.
 - Generate exactly 3 quiz questions.
 - correctAnswer must be exactly one letter: A, B, C, or D.
-- Return ONLY the JSON. No markdown code fences.
+- Return ONLY the JSON. No markdown code fences. No extra text.
 `;
 
   try {
