@@ -261,6 +261,39 @@ Rules:
 
   } catch (err) {
     console.error('solve-doubt error:', err.message || err);
+    
+    // If Gemini fails (e.g. 429 quota error) and we have an image, try Groq Vision
+    if (hasImage && groqClient) {
+      console.log('🔄 Gemini failed. Falling back to Groq Vision model...');
+      try {
+        const completion = await groqClient.chat.completions.create({
+          model: 'llama-3.2-11b-vision-preview',
+          messages: [
+            {
+              role: 'user',
+              content: [
+                { type: 'text', text: prompt },
+                {
+                  type: 'image_url',
+                  image_url: {
+                    url: `data:${imageMimeType};base64,${imageBase64}`
+                  }
+                }
+              ]
+            }
+          ],
+          temperature: 0.7,
+          max_tokens: 2048
+        });
+        const text = completion.choices[0]?.message?.content || '';
+        const data = parseJSONFromAI(text);
+        console.log('✅ Groq Vision fallback response received.');
+        return res.json(data);
+      } catch (groqErr) {
+        console.error('❌ Groq Vision fallback failed:', groqErr.message || groqErr);
+      }
+    }
+
     const mockData = getMockDoubtResponse(question || 'Image-based Doubt', lang, diff, hasImage);
     mockData._fallback = true;
     mockData.errorMessage = err.message || String(err);
