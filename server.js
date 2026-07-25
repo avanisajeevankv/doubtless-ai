@@ -263,6 +263,7 @@ Rules:
     console.error('solve-doubt error:', err.message || err);
     const mockData = getMockDoubtResponse(question || 'Image-based Doubt', lang, diff, hasImage);
     mockData._fallback = true;
+    mockData.errorMessage = err.message || String(err);
     return res.json(mockData);
   }
 });

@@ -404,6 +404,11 @@ async function solveDoubt() {
     clearInterval(loaderInterval);
     SFX.success();
 
+    if (data._fallback) {
+      const msg = data.errorMessage ? `: ${data.errorMessage}` : ". Loaded Demo answer instead.";
+      showToast("⚠️ Image solver API error" + msg, "warning");
+    }
+
     // Reset attachments
     clearAttachedImage();
     inputEl.value = '';
