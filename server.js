@@ -37,14 +37,14 @@ if (groqKey && groqKey !== 'your_groq_api_key_here') {
   }
 }
 
-// --- Gemini (fallback if Groq not available) ---
+// --- Gemini (used for image queries) ---
 const geminiKey = process.env.GEMINI_API_KEY;
-if (!groqClient && geminiKey && geminiKey !== 'your_gemini_api_key_here') {
+if (geminiKey && geminiKey !== 'your_gemini_api_key_here') {
   try {
     const { GoogleGenAI } = require('@google/genai');
     genAI = new GoogleGenAI({ apiKey: geminiKey });
-    aiProvider = 'gemini';
-    console.log('✅ Gemini API initialized (fallback live mode).');
+    if (aiProvider === 'mock') aiProvider = 'gemini';
+    console.log('✅ Gemini API initialized (multimodal mode).');
   } catch (err) {
     console.error('❌ Gemini init failed:', err.message);
   }
