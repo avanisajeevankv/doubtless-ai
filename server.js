@@ -267,7 +267,7 @@ Rules:
       console.log('🔄 Gemini failed. Falling back to Groq Vision model...');
       try {
         const completion = await groqClient.chat.completions.create({
-          model: 'llama-3.2-11b-vision-preview',
+          model: 'llama-3.2-11b-vision-id-preview',
           messages: [
             {
               role: 'user',
