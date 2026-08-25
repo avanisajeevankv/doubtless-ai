@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Doubtless // Centered Multilingual Solver</title>
-  <meta name="description" content="An AI-powered centered bilingual academic doubt solver. Solve equations, diagrams, and texts side-by-side.">
+  <title>Doubtless AI // Centered Bilingual Oracle</title>
+  <meta name="description" content="A premium AI-powered bilingual academic doubt solver. Solve text queries and image problems side-by-side.">
 
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
   
   <!-- Font Awesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -19,10 +19,8 @@
 </head>
 <body>
 
-  <!-- Background Animated Orbs -->
-  <div class="bg-glow-orb orb-1"></div>
-  <div class="bg-glow-orb orb-2"></div>
-  <div class="bg-glow-orb orb-3"></div>
+  <!-- Background Animated Star Particle Canvas -->
+  <canvas id="particle-canvas"></canvas>
 
   <!-- Toast Messages -->
   <div class="toast-container" id="toast-container"></div>
@@ -181,6 +179,12 @@
               <span id="solution-difficulty-badge" class="badge">Standard Level</span>
             </div>
             <div class="solution-actions">
+              <!-- Speech rate controller -->
+              <div class="speech-rate-control" title="Adjust Read-Aloud Speed">
+                <i class="fa-solid fa-gauge-high"></i>
+                <input type="range" id="speech-rate-slider" min="0.5" max="2.0" step="0.15" value="0.95">
+                <span id="speech-rate-val">0.95x</span>
+              </div>
               <button id="star-btn" class="star-btn" title="Bookmark explanation">
                 <i class="fa-regular fa-star"></i>
               </button>

@@ -261,7 +261,10 @@ function speakText(text, langName, button) {
   function doSpeak() {
     activeUtterance        = new SpeechSynthesisUtterance(cleanText);
     activeUtterance.lang   = langCode;
-    activeUtterance.rate   = 0.92;
+    
+    // Read speed rate from slider dynamically
+    const rateSlider = document.getElementById('speech-rate-slider');
+    activeUtterance.rate   = rateSlider ? parseFloat(rateSlider.value) : 0.95;
     activeUtterance.pitch  = 1;
 
     const voice = getBestVoice(langCode);
@@ -461,8 +464,8 @@ function displaySolution(item) {
   starBtn.className = item.saved ? 'star-btn saved' : 'star-btn';
   starBtn.innerHTML = item.saved ? '<i class="fa-solid fa-star"></i>' : '<i class="fa-regular fa-star"></i>';
 
-  document.getElementById('explanation-english-content').innerHTML = mdToHtml(item.englishExplanation);
-  document.getElementById('explanation-native-content').innerHTML = mdToHtml(item.nativeExplanation);
+  document.getElementById('explanation-english-content').innerHTML = mdToHtml(item.englishExplanation, item.keyTerms);
+  document.getElementById('explanation-native-content').innerHTML = mdToHtml(item.nativeExplanation, item.keyTerms);
 
   const vocabContainer = document.getElementById('vocab-container');
   vocabContainer.innerHTML = '';
@@ -715,8 +718,9 @@ function bindEvents() {
   });
 }
 
+
 // ============================================================================
-// Formatting utilities
+// Formatting utilities & Vocabulary Tooltips
 // ============================================================================
 function escapeHtml(text) {
   return text
@@ -727,12 +731,12 @@ function escapeHtml(text) {
     .replace(/'/g, "&#039;");
 }
 
-function mdToHtml(md) {
+function mdToHtml(md, keyTerms = []) {
   if (!md) return '';
-  return md
+  let html = md
     // Math formulas (LaTeX)
-    .replace(/\\\[([\s\S]+?)\\\]/g, '<div class="math-block">$$$1$$</div>')
-    .replace(/\\\(([\s\S]+?)\\\)/g, '<span class="math-inline">$$$1$$</span>')
+    .replace(/\\\[([\s\S]+?)\\\]/g, '<div class="math-block">\\\[$1\\\]</div>')
+    .replace(/\\\(([\s\S]+?)\\\)/g, '<span class="math-inline">\\($1\\)</span>')
     .replace(/^### (.+)$/gm, '<h3>$1</h3>')
     .replace(/^## (.+)$/gm, '<h2>$1</h2>')
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -745,6 +749,19 @@ function mdToHtml(md) {
       return `<p>${trimmed}</p>`;
     })
     .join('');
+
+  // Auto-highlight key terms if present in explanations
+  if (keyTerms && keyTerms.length > 0) {
+    keyTerms.forEach(term => {
+      if (term.term && term.term.length > 2) {
+        // Match word boundaries (case insensitive)
+        const regex = new RegExp(`\\b(${term.term})\\b`, 'gi');
+        html = html.replace(regex, `<span class="vocab-highlight" data-definition="${escapeHtml(term.definition)}">$1</span>`);
+      }
+    });
+  }
+
+  return html;
 }
 
 function showToast(message, type = 'success', duration = 3000) {
@@ -753,7 +770,7 @@ function showToast(message, type = 'success', duration = 3000) {
   
   const toast = document.createElement('div');
   toast.className = `toast toast-${type}`;
-  const icons = { success: 'fa-check-circle', error: 'fa-circle-xmark', info: 'fa-circle-info' };
+  const icons = { success: 'fa-check-circle', error: 'fa-circle-xmark', info: 'fa-circle-info', warning: 'fa-triangle-exclamation' };
   toast.innerHTML = `<i class="fa-solid ${icons[type] || 'fa-info-circle'}"></i><span>${message}</span>`;
   container.appendChild(toast);
   
@@ -765,12 +782,119 @@ function showToast(message, type = 'success', duration = 3000) {
   }, duration);
 }
 
+// ============================================================================
+// Interactive Star Particle Canvas Physics Backdrop
+// ============================================================================
+let canvas, ctx;
+let particles = [];
+const particleCount = 65;
+let mouse = { x: null, y: null, radius: 110 };
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.size = Math.random() * 2 + 0.5;
+    this.speedX = Math.random() * 0.4 - 0.2;
+    this.speedY = Math.random() * 0.4 - 0.2;
+    this.color = Math.random() > 0.5 ? 'rgba(99, 102, 241, 0.4)' : 'rgba(6, 182, 212, 0.4)';
+  }
+  update() {
+    this.x += this.speedX;
+    this.y += this.speedY;
+
+    if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+    if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+
+    // Interactive mouse pull
+    if (mouse.x !== null && mouse.y !== null) {
+      let dx = mouse.x - this.x;
+      let dy = mouse.y - this.y;
+      let distance = Math.hypot(dx, dy);
+      if (distance < mouse.radius) {
+        const force = (mouse.radius - distance) / mouse.radius;
+        this.x -= dx * force * 0.03;
+        this.y -= dy * force * 0.03;
+      }
+    }
+  }
+  draw() {
+    ctx.fillStyle = this.color;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+    ctx.fill();
+  }
+}
+
+function initParticles() {
+  canvas = document.getElementById('particle-canvas');
+  if (!canvas) return;
+  ctx = canvas.getContext('2d');
+  
+  resizeCanvas();
+  particles = [];
+  for (let i = 0; i < particleCount; i++) {
+    particles.push(new Particle());
+  }
+
+  window.addEventListener('resize', resizeCanvas);
+  window.addEventListener('mousemove', (e) => {
+    mouse.x = e.x;
+    mouse.y = e.y;
+  });
+  window.addEventListener('mouseleave', () => {
+    mouse.x = null;
+    mouse.y = null;
+  });
+
+  animate();
+}
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  
+  // Drifting connections
+  for (let i = 0; i < particles.length; i++) {
+    particles[i].update();
+    particles[i].draw();
+    for (let j = i + 1; j < particles.length; j++) {
+      let dx = particles[i].x - particles[j].x;
+      let dy = particles[i].y - particles[j].y;
+      let dist = Math.hypot(dx, dy);
+      if (dist < 100) {
+        ctx.strokeStyle = `rgba(99, 102, 241, ${0.12 - dist / 900})`;
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+  requestAnimationFrame(animate);
+}
+
 // Init App
 document.addEventListener('DOMContentLoaded', () => {
   loadState();
   bindEvents();
   initSpeechRecognition();
+  initParticles();
   checkServerHealth();
   
+  // Rate slider update
+  const rateSlider = document.getElementById('speech-rate-slider');
+  const rateValText = document.getElementById('speech-rate-val');
+  if (rateSlider && rateValText) {
+    rateSlider.addEventListener('input', () => {
+      rateValText.textContent = rateSlider.value + 'x';
+    });
+  }
+
   setInterval(checkServerHealth, 6000);
 });
