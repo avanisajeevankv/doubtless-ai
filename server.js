@@ -216,18 +216,18 @@ Rules:
     if (!hasImage) {
       if (groqClient) {
         try {
-          console.log('📤 [Groq Text] solving: "' + question + '" [' + lang + '/' + diff + ']');
+          console.log('📤 [DeepSeek-R1 Text] solving: "' + question + '" [' + lang + '/' + diff + ']');
           const completion = await groqClient.chat.completions.create({
-            model: 'llama-3.3-70b-versatile',
+            model: 'deepseek-r1-distill-llama-70b',
             messages: [{ role: 'user', content: prompt }],
             temperature: 0.7,
             max_tokens: 2048,
           });
           text = completion.choices[0]?.message?.content || '';
-          usedProvider = 'groq';
-          console.log('✅ [Groq Text] successfully answered.');
+          usedProvider = 'groq-deepseek';
+          console.log('✅ [DeepSeek-R1 Text] successfully answered.');
         } catch (groqErr) {
-          console.warn('⚠️ [Groq Text] failed, attempting Gemini fallback:', groqErr.message || groqErr);
+          console.warn('⚠️ [DeepSeek-R1 Text] failed, attempting Gemini fallback:', groqErr.message || groqErr);
         }
       }
 
@@ -243,10 +243,10 @@ Rules:
           text = result.text;
           usedProvider = 'gemini';
         } catch (geminiErr) {
-          console.warn('⚠️ gemini-2.5-pro text failed, trying gemini-2.0-flash:', geminiErr.message || geminiErr);
+          console.warn('⚠️ gemini-2.5-pro text failed, trying gemini-2.5-flash:', geminiErr.message || geminiErr);
           try {
             const result = await genAI.models.generateContent({
-              model: 'gemini-2.0-flash',
+              model: 'gemini-2.5-flash',
               contents: prompt,
               config: { responseMimeType: 'application/json' }
             });
@@ -281,10 +281,10 @@ Rules:
           text = result.text;
           usedProvider = 'gemini';
         } catch (geminiErr) {
-          console.warn('⚠️ gemini-2.5-pro multimodal failed, trying gemini-2.0-flash:', geminiErr.message || geminiErr);
+          console.warn('⚠️ gemini-2.5-pro multimodal failed, trying gemini-2.5-flash:', geminiErr.message || geminiErr);
           try {
             const result = await genAI.models.generateContent({
-              model: 'gemini-2.0-flash',
+              model: 'gemini-2.5-flash',
               contents: [
                 prompt,
                 {
