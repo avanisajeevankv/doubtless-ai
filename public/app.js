@@ -898,5 +898,3 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setInterval(checkServerHealth, 6000);
 });
-  });
-}
