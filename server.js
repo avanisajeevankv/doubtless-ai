@@ -236,7 +236,7 @@ Rules:
         try {
           console.log('📤 [Gemini Text Fallback] solving: "' + question + '"');
           const result = await genAI.models.generateContent({
-            model: 'gemini-2.0-flash',
+            model: 'gemini-2.5-pro',
             contents: prompt,
             config: { responseMimeType: 'application/json' }
           });
@@ -256,7 +256,7 @@ Rules:
         try {
           console.log('📤 [Gemini Multimodal] solving image doubt...');
           const result = await genAI.models.generateContent({
-            model: 'gemini-2.0-flash',
+            model: 'gemini-2.5-pro',
             contents: [
               prompt,
               {
