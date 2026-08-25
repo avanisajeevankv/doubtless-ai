@@ -234,7 +234,7 @@ Rules:
       // Fallback to Gemini if Groq failed or wasn't set up
       if (!text && genAI) {
         try {
-          console.log('📤 [Gemini Text Fallback] solving: "' + question + '"');
+          console.log('📤 [Gemini Text Fallback] attempting gemini-2.5-pro...');
           const result = await genAI.models.generateContent({
             model: 'gemini-2.5-pro',
             contents: prompt,
@@ -242,9 +242,19 @@ Rules:
           });
           text = result.text;
           usedProvider = 'gemini';
-          console.log('✅ [Gemini Text Fallback] successfully answered.');
         } catch (geminiErr) {
-          console.error('❌ [Gemini Text Fallback] failed:', geminiErr.message || geminiErr);
+          console.warn('⚠️ gemini-2.5-pro text failed, trying gemini-2.0-flash:', geminiErr.message || geminiErr);
+          try {
+            const result = await genAI.models.generateContent({
+              model: 'gemini-2.0-flash',
+              contents: prompt,
+              config: { responseMimeType: 'application/json' }
+            });
+            text = result.text;
+            usedProvider = 'gemini';
+          } catch (flashErr) {
+            console.error('❌ Both Gemini text models failed:', flashErr.message || flashErr);
+          }
         }
       }
     }
@@ -254,7 +264,7 @@ Rules:
       // 1. Try Gemini first (best quality OCR and math interpretation)
       if (genAI) {
         try {
-          console.log('📤 [Gemini Multimodal] solving image doubt...');
+          console.log('📤 [Gemini Multimodal] attempting gemini-2.5-pro image solve...');
           const result = await genAI.models.generateContent({
             model: 'gemini-2.5-pro',
             contents: [
@@ -270,9 +280,27 @@ Rules:
           });
           text = result.text;
           usedProvider = 'gemini';
-          console.log('✅ [Gemini Multimodal] successfully answered.');
         } catch (geminiErr) {
-          console.warn('⚠️ [Gemini Multimodal] failed, attempting Groq Vision fallback:', geminiErr.message || geminiErr);
+          console.warn('⚠️ gemini-2.5-pro multimodal failed, trying gemini-2.0-flash:', geminiErr.message || geminiErr);
+          try {
+            const result = await genAI.models.generateContent({
+              model: 'gemini-2.0-flash',
+              contents: [
+                prompt,
+                {
+                  inlineData: {
+                    data: imageBase64,
+                    mimeType: imageMimeType
+                  }
+                }
+              ],
+              config: { responseMimeType: 'application/json' }
+            });
+            text = result.text;
+            usedProvider = 'gemini';
+          } catch (flashErr) {
+            console.error('❌ Both Gemini multimodal models failed:', flashErr.message || flashErr);
+          }
         }
       }
 

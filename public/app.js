@@ -495,9 +495,6 @@ function displaySolution(item) {
     top: solutionPanel.offsetTop - 40,
     behavior: 'smooth'
   });
-
-  // Re-bind tilt listeners to newly generated vocabulary cards
-  initTiltEffects();
 }
 
 function renderQuiz(quizList) {
@@ -899,40 +896,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  initTiltEffects();
-
   setInterval(checkServerHealth, 6000);
 });
-
-// ============================================================================
-// Interactive 3D Card Hover Tilt Effect
-// ============================================================================
-function initTiltEffects() {
-  const cards = document.querySelectorAll('.card, .vocab-card, .mini-stat');
-  cards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left; // x position within element
-      const y = e.clientY - rect.top;  // y position within element
-      
-      const centerX = rect.width / 2;
-      const centerY = rect.height / 2;
-      
-      // Calculate tilt degrees (max 8 degrees tilt)
-      const rotateY = ((x - centerX) / centerX) * 8;
-      const rotateX = -((y - centerY) / centerY) * 8;
-      
-      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
-      card.style.transition = 'none';
-      
-      // Dynamic specular sheen spot light
-      card.style.backgroundImage = `radial-gradient(circle at ${x}px ${y}px, rgba(255,255,255,0.08) 0%, transparent 70%), var(--card-bg-gradient)`;
-    });
-    
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
-      card.style.transition = 'transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1)';
-      card.style.backgroundImage = 'var(--card-bg-gradient)';
-    });
   });
 }
