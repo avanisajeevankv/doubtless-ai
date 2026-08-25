@@ -19,62 +19,62 @@
   --radius-lg: 26px;
 }
 
-/* Dark Mode Theme */
+/* Dark Mode Theme (Cyber-Auroral) */
 [data-theme="dark"] {
-  --bg-app: #030408;
-  --bg-grid: rgba(99, 102, 241, 0.025);
-  --bg-card: rgba(10, 11, 20, 0.75);
-  --bg-input: #08090f;
-  --border-color: rgba(255, 255, 255, 0.07);
-  --border-hover: rgba(99, 102, 241, 0.45);
+  --bg-app: #030306;
+  --bg-grid: rgba(0, 245, 160, 0.015);
+  --bg-card: rgba(12, 14, 24, 0.78);
+  --bg-input: #07080f;
+  --border-color: rgba(0, 245, 160, 0.08);
+  --border-hover: rgba(0, 245, 160, 0.4);
   
-  --text-main: #f9fafb;
-  --text-sec: #d1d5db;
-  --text-muted: #6b7280;
+  --text-main: #f3f4f6;
+  --text-sec: #9ca3af;
+  --text-muted: #525866;
   
-  --accent-primary: #6366f1; /* Indigo */
-  --accent-secondary: #06b6d4; /* Cyan */
-  --accent-tertiary: #8b5cf6; /* Purple */
+  --accent-primary: #00f5a0;   /* Aurora Emerald */
+  --accent-secondary: #00d9ff; /* Cyber Cyan */
+  --accent-tertiary: #7b2cbf;  /* Neon Violet */
   
-  --card-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.55);
-  --glow-color: rgba(99, 102, 241, 0.15);
+  --card-shadow: 0 10px 40px 0 rgba(0, 0, 0, 0.65), 0 0 15px rgba(0, 245, 160, 0.03);
+  --glow-color: rgba(0, 245, 160, 0.1);
   
-  --card-bg-gradient: linear-gradient(135deg, rgba(14, 16, 28, 0.85) 0%, rgba(8, 9, 16, 0.9) 100%);
-  --badge-bg: rgba(99, 102, 241, 0.15);
+  --card-bg-gradient: linear-gradient(135deg, rgba(14, 18, 32, 0.88) 0%, rgba(6, 8, 14, 0.94) 100%);
+  --badge-bg: rgba(0, 245, 160, 0.12);
   
-  --incorrect-bg: rgba(239, 68, 68, 0.08);
-  --incorrect-border: rgba(239, 68, 68, 0.35);
-  --correct-bg: rgba(34, 197, 94, 0.08);
-  --correct-border: rgba(34, 197, 94, 0.35);
+  --incorrect-bg: rgba(239, 68, 68, 0.06);
+  --incorrect-border: rgba(239, 68, 68, 0.3);
+  --correct-bg: rgba(0, 245, 160, 0.06);
+  --correct-border: rgba(0, 245, 160, 0.3);
 }
 
-/* Light Mode Theme */
+/* Light Mode Theme (Mint-Alabaster) */
 [data-theme="light"] {
-  --bg-app: #f6f5f0;
-  --bg-grid: rgba(120, 110, 90, 0.04);
-  --bg-card: rgba(255, 255, 255, 0.85);
-  --bg-input: #fdfdfd;
-  --border-color: rgba(0, 0, 0, 0.08);
-  --border-hover: rgba(79, 70, 229, 0.4);
+  --bg-app: #f4f6f4;
+  --bg-grid: rgba(12, 150, 100, 0.025);
+  --bg-card: rgba(255, 255, 255, 0.88);
+  --bg-input: #fafcfa;
+  --border-color: rgba(12, 150, 100, 0.08);
+  --border-hover: rgba(12, 150, 100, 0.35);
   
-  --text-main: #0f172a;
-  --text-sec: #334155;
-  --text-muted: #94a3b8;
+  --text-main: #0b130e;
+  --text-sec: #3f4e45;
+  --text-muted: #889a8f;
   
-  --accent-primary: #4f46e5;
-  --accent-secondary: #0891b2;
-  --accent-tertiary: #7c3aed;
+  --accent-primary: #059669;   /* Mint Green */
+  --accent-secondary: #0891b2; /* Cyan Teal */
+  --accent-tertiary: #6366f1;  /* Indigo */
   
-  --card-shadow: 0 12px 42px rgba(100, 110, 140, 0.06);
-  --glow-color: rgba(79, 70, 229, 0.05);
+  --card-shadow: 0 12px 42px rgba(10, 30, 20, 0.05);
+  --glow-color: rgba(5, 150, 105, 0.05);
   
-  --card-bg-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(248, 246, 240, 0.95) 100%);
-  --badge-bg: rgba(79, 70, 229, 0.08);
+  --card-bg-gradient: linear-gradient(135deg, rgba(255, 255, 255, 0.96) 0%, rgba(246, 248, 246, 0.96) 100%);
+  --badge-bg: rgba(5, 150, 105, 0.07);
   
-  --incorrect-bg: rgba(254, 226, 226, 0.65);
-  --incorrect-border: rgba(239, 68, 68, 0.3);
-  --correct-bg: rgba(220, 252, 231, 0.65);
-  --correct-border: rgba(34, 197, 94, 0.3);
+  --incorrect-bg: rgba(254, 226, 226, 0.6);
+  --incorrect-border: rgba(239, 68, 68, 0.25);
+  --correct-bg: rgba(220, 252, 231, 0.6);
+  --correct-border: rgba(5, 150, 105, 0.25);
 }
 
 /* Base resets & layouts */
