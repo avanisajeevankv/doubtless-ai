@@ -398,11 +398,14 @@ select:focus {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-md);
   box-shadow: var(--card-shadow);
-  transition: border-color var(--transition-normal);
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  transition: border-color var(--transition-normal), transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), box-shadow var(--transition-normal);
 }
 
 .card:hover {
   border-color: var(--border-hover);
+  box-shadow: 0 15px 45px rgba(99, 102, 241, 0.15);
 }
 
 .card-header {
